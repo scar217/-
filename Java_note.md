@@ -2891,7 +2891,7 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >           System.out.println("3");
 >       }
 >   }
->                                                 
+>                                                   
 >   ```
 >
 > * ==默认方法使用 default 关键字修饰==。可以**通过实现类对象来调用**
@@ -3001,19 +3001,19 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >       public void method(){
 >   //        局部内部类（方法内）：
 >           class AA{
->                                                             
+>                                                               
 >           }
 >       }
 >       {
 >   //        局部内部类（代码块内）
 >           class BB{
->                                                             
+>                                                               
 >           }
 >       }
 >   //    局部内部类（构造器内）：
 >       public person(){
 >           class CC{
->                                                             
+>                                                               
 >           }
 >       }
 >   }
@@ -3025,11 +3025,11 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >   class person{
 >   //静态成员内部类：
 >       static class Dog{
->                                                         
+>                                                           
 >   }
 >   //非静态成员内部类：
 >       class Bird{
->                                                         
+>                                                           
 >       }
 >   }
 >   ```
@@ -4128,7 +4128,7 @@ String(byte[] ，int offset ，int length);// ：用指定的字节数组的一�
 >    StringBuffer sb1 = new StringBuffer();//char[] value = new char[16];底层创建了一个长度为16的字符数组
 >    sb1.append('a');//value[0] = 'a';
 >    sb1.append('b');//value[1] = 'b';
->                                                                     
+>                                                                        
 >    StringBuffer sb2 = new StringBuffer("abc");//char[] value =new char{"abc".length() + 16}; value.append("abc");
 >    /* 问题1：扩容问题：如果要添加的数据底层数组盛不下了，那就要扩容底层的数组
 >          默认情况下，扩容为原来容量的2倍+2，同时将原有的数组中的元素复制到新的数组中
@@ -5492,4 +5492,5 @@ HashSet set = new HashSet();
 
 *其中Person 类中重写了hashCode() 和equal()*
 
-大萨达多
+大萨达多打算的
+
