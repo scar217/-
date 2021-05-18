@@ -1,0 +1,1022 @@
+【1】
+计算存款的本金和复利之和。输入存款金额 money、存期 year 和年利率 rate，根据公式计算存款到期时的本息合计sum（税前），输出时保留2位小数。
+sum = money(1+rate)^year(提示：在C语言里，^要用pow()函数计算，详见书后附录)。
+程序运行示例如下：
+Enter money:1000
+Enter year:3
+Enter rate:0.025
+sum = 1076.89
+答案：
+##include<stdio.h>
+#include<math.h>     // 一些数学公式需要调用这个头文件
+int main()
+{
+    int year , money ;//  定义·相关变量
+    double rate , sum , x ;
+    printf("Enter money:");
+    scanf("%d",&money);    //  & 符号很容易漏
+    printf("Enter year:");
+    scanf("%d",&year);
+    printf("Enter rate:");
+    scanf("%lf",&rate);   //  double 型变量对应 lf
+    x = pow(1+rate,year);   //pow(x,y)表示x的y次方
+    sum = money*x;
+    printf("sum = %.2f",sum);
+    return 0 ;
+}
+【2】
+行列式的计算
+#include <stdio.h>
+#include <stdlib.h>
+void fun3(float *,int);
+float fun4(float *,int);
+void main()
+{
+int i,j,n;
+float *a,answer;
+do
+{
+printf("请输入您要计算的行列式的行数或列数n(n>1):");
+scanf("%d",&n);
+}while(n<2);
+a=(float *)malloc(n*n*sizeof(float));
+for(i=0;i<n;i++)
+{
+printf("请输入您要计算的行列式的:\n");
+for(j=0;j<n;j++)
+{
+printf("第%d行%d列:",i+1,j+1);
+scanf("%f",&a[i*n+j]);
+}
+}
+fun3(a,n);
+answer=fun4(a,n);
+printf("您要计算的行列式的值为:%.3f\n\n\n",answer);
+}
+void fun3(float a[],int n)
+{
+int i,j,d,f;
+float m=1,w;
+for(j=0;j<n;j++)
+{
+for(i=0;i<n;i++)
+{
+if(a[j*n+j]==0)
+{
+for(d=j+1;d<n;d++)
+{
+if(a[d*n+j]!=0)
+break;
+}
+for(f=j;f<n;f++)
+a[j*n+f]+=a[d*n+f]*m;
+}
+if(i!=j)
+{
+w=-(a[i*n+j]/a[j*n+j]);
+for(f=j;f<n;f++)
+a[i*n+f]+=a[j*n+f]*w;
+}
+}
+}
+}
+float fun4(float a[],int n)
+{
+int i;
+float answer=1;
+for(i=0;i<n;i++)
+answer*=a[i*n+i];
+return answer;
+}
+【3】
+产品信息格式化
+编写一个程序, 对用户录入的产品信息进行格式化。
+
+以下为程序的运行示例：
+Enter item number:
+385↙
+Enter unit price:
+12.5↙
+Enter purchase date (yy mm dd):
+2015 3 12↙
+Item      Unit     Purchase
+385      $12.50    03/12/2015
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int a,mm,yy,dd;
+    float d;
+    printf("Enter item number:\n");
+    scanf("%d",&a);
+    printf("Enter unit price:\n");
+
+
+    scanf("%f",&d);
+    printf("Enter purchase date (yy mm dd):\n");
+
+    scanf("%d%d%d",&yy,&mm,&dd);
+
+    printf("Item      Unit     Purchase\n");
+    printf("%-9d$%-9.2f%02d/%02d/%02d\n",a,d,mm,dd,yy);
+
+    return 0;
+}
+【4】
+逆序数的拆分计算
+从键盘输入一个4位数的整数，编程计算并输出它的逆序数（忽略整数前的正负号）。例如，输入-1234，忽略负号，由1234分离出其千位1、百位2、十位3、个位4，然后计算4*1000+3*100+2*10+1 = 4321，并输出4321。再将得到的逆序数4321拆分为两个2位数的正整数43和21，计算并输出拆分后的两个数的平方和的结果。
+
+答案一：
+#include <stdio.h>
+#include <math.h>
+int main()
+{
+    int x,y,a,b,temp;
+    printf("Input x:\n");
+    scanf("%d",&x);
+    y=fabs(x);/*取x的绝对值*/
+    temp=(y%10)*1000+(y%100)/10*100+(y%1000)/100*10+y/1000;/*y%100=34。y%100/10=3*/
+    printf("y=%d\n",temp);
+    a=temp/100;b=temp%100;
+    printf("a=%d,b=%d\n",a,b);
+    printf("result=%d\n",a*a+b*b);
+    return 0;
+}
+答案二：
+#include<stdio.h>
+int main()
+{
+    int i,x;
+    printf("Input x:\n");
+    scanf("%d",&i);
+        for(;i>0;i/=10){
+            x=i%10;
+            printf("%d",x);
+        }
+    return 0;
+}
+【5】
+输入2个数（浮点数），求出他们的平方和
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    float x,y,result;
+    float a,b;
+    printf("Please input x and y:\n");
+    scanf("%f,%f",&x,&y);
+    a=pow(x,2);
+    b=pow(y,2);
+
+    result=a+b;
+    printf("result=%.2f\n",result);
+
+    return 0;
+}
+【6】
+大小写字母转换问题:
+    将从键盘读入的小写字母转换成大写字母向屏幕输出，同时输出该大写字母的ASCII码值和所占的内存空间大小。(输入输出中的◊代表一个空格)
+输入一行：小写字母
+输出两行：第一行为提示输入小写字母；第二行输出转换后的大写字母、对应ASCII码值和在内存中占多少字节
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    char ch,z;
+    int y;
+
+    printf("please input a lowercase:\n");
+    scanf("%c",&ch);
+
+    y=ch-32;//a对应ASCII码值是97，A对应的是65
+    z=ch-32;
+
+    printf("%c %d %d",z,y,sizeof(ch));
+
+    return 0;
+}
+【7】
+编写程序实现以下功能：从键盘输入一个大写英文字母，将该字母转换成小写字母后，打印输出转换后的小写字母及其所对应的ASC码值。
+**输入提示信息**："Enter a capital letter:\n"
+**输入数据格式**："%c"
+**输出数据格式**："%c,%d\n"
+友情提示：从键盘输入一个字符可用scanf也可用getchar
+答案一：
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    char ch;
+
+    printf("Enter a capital letter:\n");
+    scanf("%c",&ch);
+
+    ch=ch+32;
+
+    printf("%c,%d",ch,ch);
+
+    return 0;
+}
+答案二：
+#include<stdio.h>
+main()
+{
+    char ch;
+    printf("Enter a capital letter:\n");
+    ch=getchar();// getchar是一个函数，功能就是从键盘缓冲区内读入一个字符
+    ch=ch+32;
+    printf("%c,%d\n",ch,ch);
+}
+notice：getchar()函数从标准输入里读取下一个字符。返回类型为int型，返回值为用户输入的ASCⅡ码，出错返回-1。
+
+（一）小写字母转大写：
+
+#include <stdio.h>
+#include <stdlib.h>
+void main()
+{
+    char ch;
+
+    printf("Press a key and then press Enter:");
+    scanf("%c",&ch);
+
+    ch=ch-32;
+    printf("%c,%d\n",ch,ch);
+
+    return 0;
+
+}
+【8】
+三角形求面积
+#include <stdio.h>
+#include<math.h>
+main()
+{
+  float a,b,c;
+  double area,s;
+  printf("Enter 3 floats:");
+  scanf("%f,%f,%f",&a,&b,&c);
+
+  s = 0.5*(a+b+c);//s的计算方法
+  area = sqrt(s*(s-a)*(s-b)*(s-c));//三角形面积公式
+
+  printf("area=%.2f\n",area);
+  return 0;
+}
+【9】
+字符类型判断
+从键盘键入任意一个字符，判断该字符是英文字母（不区分大、小写）、数字字符还是其它字符。若键入字母，则屏幕显示 It is an English character.；若键入数字则屏幕显示It is a digit character. ；若输入其它字符，则屏幕显示：It is other character. 
+答案：
+#include <stdio.h>
+#include <math.h>
+
+int main()
+{
+    char ch；
+    printf("input simple:");
+
+    ch=getchar();
+
+    if((ch>='a'&&ch<='z')||(ch>='A'&&ch<='Z'))//判断是不是字母
+        printf("It is an English character.\n");
+
+    else if(ch>='0'&&ch<='9')//判断是不是数字
+        printf("It is a digit character.\n");
+
+    else
+        printf("It is other character.\n");
+
+    return 0;
+}
+【10】
+奇数偶数判断
+#include<stdio.h>
+void main()
+{
+    int a;
+    printf("Input an integer number:\n");
+    scanf("%d",&a);
+    if(a%2==0)
+        printf("%d is an even number\n",a);
+    if(a%2!=0)
+        printf("%d is an odd number\n",a);
+    return 0;
+}
+【11】
+#include<stdio.h>
+#include<math.h>
+#include<stdlib.h>
+#define EPS 1e-6
+int main(void)
+{
+    float a,b,c,disc,p,q;
+    printf("Please enter the coefficients a,b,c:");
+    scanf("%f,%f,%f",&a,&b,&c);
+    if(fabs(a)<= EPS)
+    {
+        printf("It is not a quadratic equation!\n");		
+    else
+    {
+        if(disc>EPS)
+        {
+            printf("x1=%.2f,x2 = %.2f\n",p+q,p-q);
+        }
+        else
+        {
+            printf("x1 = %.2f+%.2fi,",p,q);
+            printf("x2 = %.2f-%.2fi\n",p,q);
+        }
+    }
+    return 0;
+}
+【12】
+写一个函数返回三个整数中的中间数。函数原型：int mid(int a, int b, int c)，返回a，b，c三数中大小位于中间的一个数。在main函数中调用该函数进行测试。
+
+答案：
+#include <stdio.h>
+void main()
+{
+    int a,b,c;
+    int mid;
+    printf("请输入三个不同的整数：");
+    scanf("%d%d%d",&a,&b,&c);
+
+    if ((a>b&&b>c||c>b&&b>a))
+        mid = b;
+    else if((b>a&&a>c)||(c>a&&a>b))
+        mid = a;
+    else if((b>c&&c>a)||(a>c&&c>b))
+        mid = c;
+    else
+            mid = a;
+
+    printf("中间的一个数为%d\n",mid);
+
+
+    return 0;
+}
+【13】
+请用else if多分支条件判断语句编程设计一个简单的计算器程序。要求:
+(1)请用户按以下形式从键盘输入表达式：操作数①  运算符op  操作数②
+(2)然后计算表达式的值
+**输入提示信息**：无
+**输入数据格式**："%f%c%f"
+**输出数据格式**："%.2f%c%.2f=%.2f\n"
+  若若输入的运算符是除法运算符/，当除数为0时，输出数据格式为："dat is 0!Error!\n"
+  若输入的运算符不是加（+）、减（-）、乘（*）、除（/），则输出数据格式为："Error!\n"
+[友情提示]：
+① 用户输入的运算符为算术运算符：加（+）、减（-）、乘（*）、除（/）。用字符变量 op 表示；
+② 操作数①和操作数② 为浮点型数据，分别用浮点型变量 dat1、dat2表示。
+③ 程序运行结果如下所示：
+1+2↙ 
+1.00+2.00=3.00
+答案：
+#include <stdio.h>
+#include <math.h>
+void main()
+{
+    float dat1,dat2;
+    char op;
+    scanf("%f%c%f",&dat1,&op,&dat2);
+
+
+    if (op=='+')
+        printf("%.2f%c%.2f=%.2f\n",dat1,op,dat2,dat1+dat2);
+    else if(op=='-')
+        printf("%.2f%c%.2f=%.2f\n",dat1,op,dat2,dat1-dat2);
+    else if(op=='*')
+        printf("%.2f%c%.2f=%.2f\n",dat1,op,dat2,dat1*dat2);
+    else if(op=='/'){
+        if(dat2==0)
+        printf("dat is 0!Error!\n");
+        else
+        printf("%.2f%c%.2f=%.2f\n",dat1,op,dat2,dat1/dat2);
+
+    }
+    else
+        printf("Error!\n");
+
+    return 0;
+}
+【14】
+求解一元二次方程。
+**输入格式要求："%lf %lf %lf" 提示信息："请分别输入二次项、一次项、常数项系数a,b,c："
+**输出格式要求："方程%.1lfx^2" "%.1lfx" "%.1lf=0" "无解.\n" "有两个根：x1=%.1lf,x2=%.1lf\n"  "有一个根：x=%.1lf\n"
+程序示例运行1如下：
+请分别输入二次项、一次项、常数项系数a,b,c：1 2 1
+方程1.0x^2+2.0x+1.0=0有一个根：x=-1.0
+程序示例运行2如下：
+请分别输入二次项、一次项、常数项系数a,b,c：1 5 6
+方程1.0x^2+5.0x+6.0=0有两个根：x1=-2.0,x2=-3.0
+程序示例运行3如下：
+请分别输入二次项、一次项、常数项系数a,b,c：1 2 3
+方程1.0x^2+2.0x+3.0=0无解.
+答案：
+#include<stdio.h>
+#include<math.h>
+int main(){
+    double a,b,c,t;
+    double x1,x2,x;
+    printf("请分别输入二次项、一次项、常数项系数a,b,c:");
+    scanf("%lf %lf %lf",&a,&b,&c);
+    t=b*b*1.0-4.0*a*c;
+    if(t>0){
+            x1=(-b+sqrt(t))/(2*a);
+            x2=(-b-sqrt(t))/(2*a);
+    printf("方程%.1lfx^2+%.1lfx+%.1lf=0",a,b,c);
+    printf("有两个根：x1=%.1lf,x2=%.1lf",x1,x2);
+
+    }
+    else if(t==0){
+            x=-(2.0*a/b);
+    printf("方程%.1lfx^2+%.1lfx+%.1lf=0",a,b,c);
+    printf("有一个根：x=%.1lf",x);
+
+    }
+    else if(t<0){
+    printf("方程%.1lfx^2+%.1lfx+%.1lf=0",a,b,c);
+    printf("无解.");
+    }
+
+    return 0;
+}
+【15】
+闰年判断
+从键盘任意输入一个公元年份（大于等于1），判断它是否是闰年。若是闰年输出“Yes”，否则输出“No”。要求对输入数据进行合法性判断。
+已知符合下列条件之一者是闰年：
+（1）能被4整除，但不能被100整除；
+（2）能被400整除。
+
+运行结果示例1：
+2015↙
+No
+
+运行结果示例2：
+2016↙
+Yes
+
+运行结果示例3：
+-123↙
+Input error!
+
+运行结果示例4：
+a↙
+Input error!
+
+答案：
+#include<stdio.h>
+int main(){
+	int year, r;
+	r=scanf("%d", &year);//r用于判断输入的year数据是否有效
+	if(r!=1 || year<=0){           //r!=1,则说明输入的数据非int型，返回值为0
+		printf("Input error!\n");
+	} else {
+		if(year%4==0 && year%100!=0 || year%400==0)
+			printf("Yes\n");
+		else
+			printf("No\n");
+	}
+	return 0;
+}
+
+【16】
+编程实现简单的计算器功能，要求用户按如下格式从键盘输入算式：
+操作数1  运算符op  操作数2
+计算并输出表达式的值，其中算术运算符包括：加（+）、减（-）、乘（*）、除（/）。
+**输入格式要求："%d%c%d" 提示信息："Please enter an expression:"
+**输出格式要求："%d + %d = %d \n" "%d - %d = %d \n" "%d * %d = %d \n" "%d / %d = %d \n" "Division by zero!\n" "Invalid operator! \n"
+程序运行示例1如下：
+Please enter an expression:22+12
+22 + 12 = 34
+程序运行示例2如下：
+Please enter an expression:22-12
+22 - 12 = 10
+程序运行示例3如下： 
+Please enter an expression:22*12
+22 * 12 = 264
+程序运行示例4如下： 
+Please enter an expression:22/12
+22 / 12 = 1 
+程序运行示例5如下：
+Please enter an expression:22/0
+Division by zero!
+程序运行示例6如下： 
+Please enter an expression:22\12
+Invalid operator!
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+
+int main()
+{
+    int dat1,dat2;
+    char op;
+
+    printf("Please enter an expression:");
+    scanf("%d%c%d",&dat1,&op,&dat2);
+
+    if(op=='/'){
+        if(dat2==0)
+            printf("Division by zero!");
+        else
+            printf("%d %c %d = %d",dat1,op,dat2,dat1/dat2);
+
+    }
+    else if(op=='+')
+        printf("%d %c %d = %d",dat1,op,dat2,dat1+dat2);
+    else if(op=='-')
+        printf("%d %c %d = %d",dat1,op,dat2,dat1-dat2);
+    else if(op=='*')
+        printf("%d %c %d = %d",dat1,op,dat2,dat1*dat2);
+    else
+        printf("Invalid operator!");
+
+    return 0;
+}
+
+【17】
+已知银行整存整取存款不同期限的年息利率分别为：
+年利息率=⎧⎩⎨⎪⎪⎪⎪⎪⎪⎪⎪⎪⎪2.25%2.43%2.70%2.88%3.00%期限1年期限2年期限3年期限5年期限8年
+要求输入存钱的期限和本金，求到期时能从银行得到的本金和复利的合计。
+**输入格式要求："%d,%lf"  提示信息："Please enter year,capital:"
+**输出格式要求："rate = %lf, deposit = %lf\n"，输入错误时显示"Error rate!\n"
+程序运行示例1如下：
+Please enter year,capital:2,10000↙
+rate = 0.024300, deposit = 10491.904900
+程序运行示例2如下：
+Please enter year,capital:4,10000↙
+Error rate!
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define t 1e-6
+int main()
+{
+    double deposit,rate,capital;
+    int year,r;
+
+    printf("Please enter year,capital:");
+    r=scanf("%d,%lf",&year,&capital);
+    if(r<2){
+        printf("Error rate!\n");
+    }
+    else if(year==1||year==2||year==3||year==5||year==8){
+        if(year==1){
+            rate = 0.0225;
+            printf("rate = %lf, deposit = %lf\n",rate,capital*year*rate+capital);
+        }
+        else if(year==2){
+            rate = 0.0243;
+            printf("rate = %lf,deposit = %lf\n",rate,capital*pow((1+rate),year));
+        }
+        else if(year==3){
+            rate = 0.027;
+            printf("rate = %lf,deposit = %lf\n",rate,capital*pow((1+rate),year));
+        }
+        else if(year==5){
+            rate = 0.0288;
+            printf("rate = %lf,deposit = %lf\n",rate,capital*pow((1+rate),year));
+        }
+        else if(year==8){
+            rate = 0.03;
+            printf("rate = %lf,deposit = %lf\n",rate,capital*pow((1+rate),year));
+        }
+
+    }
+    else
+        printf("Error rate!\n");
+
+
+    return 0;
+}
+【17】
+写一个程序输入爱尔兰的当前时间，并显示其对应的华盛顿时间（减5个小时），莫斯科时间（加3个小时），北京时间（加7个小时）。输入的时间采用24小时制，如22：35（晚上10：35）。
+**提示信息："请输入爱尔兰当地时间（24小时制，如22：35）: "
+**输入格式要求："%d:%d" 
+**输出格式要求："对应的华盛顿时间为%d:%d\n"
+**输出格式要求："对应的莫斯科时间为%d:%d\n" 
+**输出格式要求："对应的北京时间为%d:%d\n"
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define t 1e-6
+int main()
+{
+    int hour,minute;
+    int hour1,hour2,hour3;
+
+    printf("请输入爱尔兰当地时间(24小时制，如22：35)：");
+    scanf("%d:%d",&hour, &minute);
+
+    hour1=hour-5;
+    hour2=hour+3;
+    hour3=hour+7;
+
+if(hour1>24)
+{
+    hour1=hour1-24;
+}
+else if(hour1<0){
+    hour1=24+hour1;
+}
+if(hour2>24)
+{
+    hour2=hour2-24;
+}
+else if(hour1<0){
+    hour2=24+hour2;
+}
+if(hour3>24)
+{
+    hour3=hour3-24;
+}
+else if(hour3<0){
+    hour3=24+hour3;
+}
+
+    printf("对应的华盛顿时间为%d:%d\n",hour1,minute);
+    printf("对应的莫斯科时间为%d:%d\n",hour2,minute);
+    printf("对应的北京时间为%d:%d\n",hour3,minute);
+
+
+    return 0;
+}
+【18】
+
+总分 11 
+
+
+
+
+
+
+
+拆分英文名
+从键盘输入某同学的英文名（小写输入，假设学生的英文名只包含3个字母。如: tom），编写程序在屏幕上输出该同学的英文名，且首字母大写（如: Tom）。同时输出组成该英文名的所有英文字符在26个英文字母中的序号。
+以下为程序的输出示例：
+input your English name:
+tom↙
+Tom
+t:20
+o:15
+m:13
+
+输入格式:  "%c%c%c"
+
+输入提示信息："input your English name:\n"
+首字母大写的英文姓名的输出格式："%c%c%c\n"
+姓名中每个字母在26个英文字母中的序号的输出格式："%c:%d\n"
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+int main()
+{
+printf("Input your English name:\n");
+char a,b,c;
+scanf("%c%c%c",&a,&b,&c);
+printf("%c%c%c\n",(a-32),b,c);
+printf("%c:%d\n",a,a-'a'+1);/*a的ASCll码排在26字符最前面，因此，【26字母排序=字符-'a'(97)+1】*/
+printf("%c:%d\n",b,b-'a'+1);//注：字符与数字相加减等价于字符ASCll码与数字相加减
+printf("%c:%d\n",c,c-'a'+1);
+return 0;
+}
+【19】循环
+假设对折一张厚度为0.1mm的纸，请问要对折多少次才能使纸的厚度从地球到达月球（假设地球到月球的距离为30万km）？
+**输出格式要求："%d"
+
+答案：
+#include <stdio.h>
+#include <stdlib.h>
+int main()
+{
+   double x;
+   int count=0;
+   for(x=0.0001;x<300000000;){
+        x=x*2.0;
+       count++;
+
+   }
+   printf("%d",count);
+   return 0;
+}
+【20】
+穷举，抓交通肇事犯。一辆卡车违犯交通规则，撞人后逃跑。现场有三人目击事件，但都没记住车号，只记下车号的一些特征。甲说：牌照的前两位数字是相同的；乙说：牌照的后两位数字是相同的，但与前两位不同；丙是位数学家，他说：四位的车号刚好是一个整数的平方。请根据以上线索求出车号。
+**输出格式要求："Lorry_No. is %d .\n"
+答案：
+#include <stdio.h>
+int main()    
+{              
+	int i,j,k,m ; 
+	for (i = 0 ; i <= 9 ; i++)
+	{
+		for (j = 0 ; j <= 9 ; j++)
+		{
+			if ( i != j )
+			{
+				k = i * 1000 + i * 100 + j * 10 + j ;
+				for (m = 3 ; m * m <= k ; m++)       //因为四位车牌最小为0011 所以m最小为3//
+				{                                    
+					if (m*m == k)
+					{
+						printf("Lorry_No. is %d . \n",k);
+					}
+				}
+			}
+		}
+	}
+	return 0 ;
+}
+【20】
+程序：显示法定格式的日期合同和其他法律文档中经常使用下列日期格式： 
+
+Dated this    day of    ,19  . 
+
+编写程序用来显示这种格式的日期。用户以月/日的格式录入日期，然后计算机显示出“法定”格式的日期： 
+
+Enter date (mm/dd/yy) : 7/19/96 
+
+Dated this 19th day of July, 1996. 
+
+可以使用printf函数实现主要的格式化。然而，还有两个问题：如何为日添加“th”（或者“st”、“nd”、“rd”），以及如何使用单词代替数字显示月份。幸运的是，switch语句可以很好地解决这两种问题：用一个switch语句负责显示日的后缀，再用另一个switch语句显示出月份名。注意，11日、12日、13日对应的英文是th结尾。 
+
+**输入格式要求："%d/%d/%d" 提示信息："Enter date (mm/dd/yy):" "Dated this %d" "st/nd/rd/th" " day of " "January/February/.../December"
+
+如果输入的日期不在合法范围内，则输出"Input error!\n"。
+**输出格式要求：", 19%.2d.\n"
+
+
+
+程序运行示例1：
+
+Enter date (mm/dd/yy):5/23/20
+
+Dated this 23rd day of May, 1920.
+
+程序运行示例2：
+
+Enter date (mm/dd/yy):13/4/99
+
+Input error!
+答案：
+#include <stdio.h>
+#include <math.h>
+int main(){
+     int m,d,y;
+     printf("Enter date (mm/dd/yy):");
+     scanf("%d/%d/%d",&m,&d,&y);
+     if((d>0&&d<30)&(m>0&&m<12)){
+        switch(d){
+    case 1:
+    
+    case 21:
+
+        printf("Dated this %dst day of ",d);
+        break;
+    case 2:
+    case 12:
+    case 22:
+
+        printf("Dated this %dnd day of ",d);
+        break;
+    case 3:
+    case 23:
+
+        printf("Dated this %drd day of ",d);
+        break;
+    default:
+        printf("Dated this %dth day of ",d);
+        break;
+        }
+        switch(m){
+        case 1:
+            printf("January,");
+            break;
+            case 2:
+                printf("February,");
+                break;
+                case 3:
+                printf("March,");
+                break;
+                case 4:
+                    printf("April,");
+                    break;
+                case 5:
+                    printf("May,");
+                    break;
+                case 6:
+                    printf("June,");
+                    break;
+                case 7:
+                    printf("July,");
+                    break;
+                case 8:
+                    printf("August,");
+                    break;
+                case 9:
+                    printf("September");
+                    break;
+                case 10:
+                    printf("October,");
+                    break;
+                    case 11:
+                        printf("November,");
+                        break;
+                    case 12:
+                        printf("December,");
+                        break;
+
+        }
+        switch(y){
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+        case 8:
+        case 9:
+            printf(" 190%d.",y);
+            break;
+        default:
+            printf(" 19%d.",y);
+            break;
+        }
+
+
+
+     }
+     else
+        printf("Input error!");
+
+
+}
+【21】
+输入：工资数，小时数（整数，空格分隔），
+输出：工资/小时数（精确到小数点后2位），并根据四舍五入取整，然后将取整的数平方后计算一共有几位，后三位分别是什么。
+程序的运行示例如下：
+2345 2    （输入）
+1172.50   （本行及以下为输出）
+1173
+7
+9 2 9
+ ***输入数据格式***："%d %d"
+ ***输出数据格式***："%.2f\n"
+                     "%d\n"
+                     "%d\n"
+                     "%d %d %d\n"
+
+答案：
+#include <stdio.h>
+#include <math.h>
+int main(){
+    int a,b,i,x,y,z;
+    float f;
+    int sum,sum1,count=0;
+    scanf("%d %d",&a,&b);
+    f=1.0*a/b;
+    printf("%.2f\n",f);
+
+    i=f+0.5;
+    printf("%d\n",i);
+
+    sum1=i*i;
+    sum=i*i;
+    do
+    {
+        sum1=sum1/10;
+        count++;
+    }while(sum1!=0);
+            printf("%d\n",count);
+
+    x=sum%10;
+    y=sum%100/10;
+    z=sum%1000/100;
+
+
+    printf("%d %d %d\n",z,y,x);
+}
+【22】
+//判断是不是素数
+#include<stdio.h>
+int main()
+{
+    int i,a;
+    int x=0;
+    int sum=0;
+
+    printf("输入整数：");
+    scanf("%d",&a);
+    for(i=a;i<=a;i++){
+        x=a%i;
+        if(x==0){
+        sum++;
+        }
+    }
+    if(sum<=2){
+        printf("这个数是素数\n");
+    }
+    else{
+        printf("这个数不是素数\n");
+    }
+
+
+    return 0;
+}
+【23】
+判断三角形类型：
+#include<stdio.h>
+#include<math.h>
+#define EPS 1e-1
+int main(void)
+{
+    float a,b,c;
+    int floag=1;//非零表示真
+    printf("Input a,b,c:\n");
+    scanf("%f,%f,%f",&a,&b,&c);
+
+        if(a+b>c&&a+c>b&&b+c>a){
+            if(fabs(a-b)<=EPS||fabs(b-c)<=EPS||fabs(c-a)<=EPS){//两个值差不超过一定精确位
+                printf("等腰");
+                floag=0;//为零为假，则不再输出if（floag）
+            }
+            else if(fabs(a-b)<=EPS&&fabs(b-c)<=EPS&&fabs(c-a)<=EPS){
+                    printf("等边");
+                    floag=0;
+            }
+            else if(fabs(a*a+b*b-c*c)<=EPS||fabs(a*a+c*c-b*b)<=EPS||fabs(c*c+b*b-a*a)<=EPS){
+                printf("直角");
+                floag=0;
+            }
+            if(floag){
+                printf("一般");
+            }
+            printf("三角形\n");
+        }
+        else{
+            printf("不是三角形");
+        }
+    return 0;
+}
+【24】
+输入一行字符，分别统计其中每个元音字母（a、e、i、o、u不分大小写）的个数。
+**输入格式要求：信息提示："Input a line of characters:\n"
+**输出格式要求："%4d"
+程序的运行示例如下：
+Input a line of characters:
+How old are you?
+   1   1   0   3   1
+
+答案：
+#include<stdio.h>
+#include<math.h>
+int main(void)
+{
+    int a=0,i=0,j=0,x=0,c=0;
+    char ch;
+    printf("Input a line of characters:\n");
+
+
+    do{
+            scanf("%c",&ch);
+        if(ch=='a'||ch=='A'){
+            i++; 
+        }
+        if(ch=='e'||ch=='E'){
+            j++;  
+        }
+        if(ch=='i'||ch=='I'){
+            a++;
+        }
+        if(ch=='o'||ch=='O'){
+            x++;
+        }
+        if(ch=='u'||ch=='U'){
+            c++;
+        }
+    }while(ch!=10);
+    printf("%4d%4d%4d%4d%4d",i,j,a,x,c);
+
+    return 0;
+}
+
+
+
+
+
+
