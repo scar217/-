@@ -2900,7 +2900,7 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >           System.out.println("3");
 >       }
 >   }
->                                                         
+>                                                                   
 >   ```
 >
 > * ==默认方法使用 default 关键字修饰==。可以**通过实现类对象来调用**
@@ -3010,19 +3010,19 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >       public void method(){
 >   //        局部内部类（方法内）：
 >           class AA{
->                                                                     
+>                                                                               
 >           }
 >       }
 >       {
 >   //        局部内部类（代码块内）
 >           class BB{
->                                                                     
+>                                                                               
 >           }
 >       }
 >   //    局部内部类（构造器内）：
 >       public person(){
 >           class CC{
->                                                                     
+>                                                                               
 >           }
 >       }
 >   }
@@ -3034,11 +3034,11 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >   class person{
 >   //静态成员内部类：
 >       static class Dog{
->                                                                 
+>                                                                           
 >   }
 >   //非静态成员内部类：
 >       class Bird{
->                                                                 
+>                                                                           
 >       }
 >   }
 >   ```
@@ -4137,7 +4137,7 @@ String(byte[] ，int offset ，int length);// ：用指定的字节数组的一�
 >    StringBuffer sb1 = new StringBuffer();//char[] value = new char[16];底层创建了一个长度为16的字符数组
 >    sb1.append('a');//value[0] = 'a';
 >    sb1.append('b');//value[1] = 'b';
->                                                                                 
+>                                                                                                
 >    StringBuffer sb2 = new StringBuffer("abc");//char[] value =new char{"abc".length() + 16}; value.append("abc");
 >    /* 问题1：扩容问题：如果要添加的数据底层数组盛不下了，那就要扩容底层的数组
 >          默认情况下，扩容为原来容量的2倍+2，同时将原有的数组中的元素复制到新的数组中
@@ -4991,7 +4991,7 @@ JDK 的元 Annotation 用于修饰其他 Annotation 定义
 
 > 
 
-### 三十一、Java集合：
+### 三十一、Collection接口：
 
 #### 集合框架的概述：
 
@@ -5500,4 +5500,286 @@ HashSet set = new HashSet();
 ```
 
 *其中Person 类中重写了hashCode() 和equal()*
+
+### 三十二、Map接口：
+
+![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-18_22-57-10.png)
+
+#### Map接口概述：
+
+```java
+/*  Map与Collection并列存在。用于保存具有 映射关系的数据:key-value
+*  Map 中的 key 和 value 都可以是任何引用类型的数据
+*  Map 中的 key 用Set来存放， 不允许重复，即同一个 Map 对象所对应的类，须重写hashCode()和equals()方法
+*   Map 中的value用Collection来存放，无序、可重复
+*  常用String类作为Map的“键”
+*  key 和 value 之间存在单向一对一关系，即通过指定的 key 总能找到唯一的、确定的 value
+*  Map接口的常用实现类：HashMap、TreeMap、LinkedHashMap和Properties。其中，HashMap是 Map 接口使用频率最高的实现类
+```
+
+==key值不能重复，所在类需要重写equals()和hashCode()方法==
+
+==value所在类只需要重写equals()方法==
+
+#### Map子接口和实现类：
+
+```java
+/* |----Map:双列数据，存储key-value对的数据（字典）
+*      |----HashMap:主要实现类；线程不安全，效率高；可以存储 null 的key 和 value
+*          |----LinkedHashMap:保证在遍历Map元素时，可以按照添加的顺序实现遍历
+*              原因：在原有的HashMap底层结构基础上，添加了一对指针，指向前一个和后一个元素
+*              使用场景：对于频繁的遍历操作，此类执行的效率高于HashMap
+*      |----TreeMap:可以按照添加的key-value对进行排序，实现排序遍历（按照key排序），此时考虑key的自然排序和定制排序
+*                  底层使用红黑树（与TreeSet一致）
+*      |----Hashtable:古老的实现类；线程安全，效率低；不能存储 null 的key 和 value
+*          |----Properties:常用来处理配置文件，①Hashtable的一个子类②key和value都是String类型
+```
+
+#### 问题：
+
+1. **HashMap和Hashtable的异同**
+   
+   * jdk7:
+   
+   * ```java
+             HashMap hashMap = new HashMap();//实例化后，底层创建了一个长度为16的数组Entry[] table(key-value构成一个Entry)
+             hashMap.put(123,89);//首先计算key的哈希值，得到在Entry数组中的存放位置
+     //        如果此位置上没有数据，则添加成功；如果此位置数据不为空，需要比较当前key与其他key的哈希值，不同则添加，同则继续比较key之间的equals()
+     //        方法，如果返回false，则添加成功，如果返回true，使用当前value去替换已存在value值。有数据时，以链表的形式存储后面来的数据，与HashSet
+     //        存储相似
+     //        在不断添加过程中，会涉及到扩容，默认扩容：扩容为原来的2倍，并复制原来的数据
+     ```
+   
+   * jdk8:
+   
+   * ```java
+     /**
+      * new HashMap()没有创建一个长度为16的数组，首次调用put()时，才创建长度为16的数组
+      * 底层数组是Node[]数组，不是Entry数组，
+      * jdk7的底层结构只有 数组+链表    jdk8 ：数组+链表+红黑树
+      * 红黑树情况：当数组某一位置上的元素已链表形式存在的数据>8,且当前数组的长度>64,
+      * 此时该位置上的所有元素改为使用红黑树存储，提高查找的效率
+      * */
+     ```
+
+#### Map常用的方法：
+
+![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-19_10-58-08.png)
+
+##### **元视图操作的方法：**
+
+**对Map进行遍历**：
+
+> 1. 遍历所有的key集：keySet():
+>
+>    * ```java
+>      LinkedHashMap map = new LinkedHashMap();
+>      map.put(123,89);
+>      map.put(23,90);
+>      map.put(90,789);
+>       
+>      Set set = map.keySet();
+>      Iterator iterator = set.iterator();
+>      while (iterator.hasNext()){
+>          System.out.println(iterator.next());//实现Map中所有key值的遍历
+>      }
+>      ```
+>
+> 2. 遍历所有的value集：values():
+>
+> 3. 遍历所有的Map集合：entrySet():
+>
+>    * 方式一：使用Map中的Entry强转，再取key和value
+>
+>    * ```java
+>      LinkedHashMap map = new LinkedHashMap();
+>      map.put(123,89);
+>      map.put(23,90);
+>      map.put(90,789);
+>                
+>      Set set = map.entrySet();
+>      Iterator iterator = set.iterator();
+>      while (iterator.hasNext()){
+>          Object obj = iterator.next();
+>          Map.Entry entry = (Map.Entry) obj;
+>          System.out.println(entry.getKey()+"-->"+entry.getValue());
+>      }
+>      ```
+>
+>    * 方式二：利用key找value
+>
+>    * ```java
+>      LinkedHashMap map = new LinkedHashMap();
+>      map.put(123,89);
+>      map.put(23,90);
+>      map.put(90,789);
+>                
+>      Set set = map.keySet();
+>      Iterator iterator = set.iterator();
+>      while (iterator.hasNext()){
+>          Object key = iterator.next();//接收每一个遍历出来的key
+>          Object value = map.get(key);//使用key值寻找value
+>          System.out.println(key+"----->"+value);
+>      }
+>      ```
+
+#### TreeMap：
+
+==向TreeMap中添加key-value,要求key必须是由同一个类创建的对象==
+
+1. 自然排序：直接使用空参构造器
+   * TreeMap 的所有的 Key 必须实现 Comparable 接口，而且所有的 Key 应该是同一个类的对象，否则将会抛出 ClasssCastException
+2. 定制排序：传入new Comparator(),重写compare方法：
+   * 创建 TreeMap 时，传入一个 Comparator 对象，该对象负责对
+     TreeMap 中的所有 key 进行排序。此时不需要 Map 的 Key 实现
+     Comparable 接口
+
+```java
+TreeMap treeMap = new TreeMap(new Comparator() {
+    @Override
+    public int compare(Object o1, Object o2) {
+        /*需要比较的内容*/
+    }
+});
+```
+
+#### Properties:
+
+==常用来处理配置文件，key和value都是String类型==
+
+#### Collections工具类：
+
+* Collections 是一个操作Set、List和Map 等集合的工具类
+* Collections 中提供了一系列静态的方法对集合元素进行排序、查询和修改等操作，还提供了对集合对象设置不可变、对集合对象实现同步控制等方法
+
+##### 方法一：排序操作：
+
+==所有方法都是static静态方法，可以使用Collections类直接调用：==
+
+```java
+/*
+reverse(List)：反转List 中元素的顺序
+shuffle(List)：对List集合元素进行随机排序
+sort(List)：根据元素的自然顺序对指定List 集合元素按升序排序
+sort(List，Comparator)：根据指定的Comparator 产生的顺序对List 集合元素进行排序
+swap(List，int，int)：将指定list 集合中的i处元素和j 处元素进行交换
+*/
+```
+
+##### 方法二：查找、替换：
+
+```java
+/*
+Object max(Collection)：根据元素的自然顺序，返回给定集合中的最大元素
+Object max(Collection，Comparator)：根据Comparator 指定的顺序，返回给定集合中的最大元素
+Object min(Collection)
+Object min(Collection，Comparator)
+intfrequency(Collection，Object)：返回指定集合中指定元素的出现次数
+void copy(List dest,List src)：将src中的内容复制到dest中
+booleanreplaceAll(List list，Object oldVal，Object newVal)：使用新值替换List 对象的所有旧值
+*/
+```
+
+copy使用注意：
+
+将src复制内容到空列表dest时，不能使用以下方式：
+
+```java
+List list = new ArrayList();
+list.add(390);
+list.add(30);
+list.add(50);
+List dest = new ArrayList();
+Collections.copy(dest,list);//此时dest只是一个长度为0的空数组，长度不能满足存放list列表中的元素
+```
+
+正确使用方式：
+
+```java
+	List list = new ArrayList();
+        list.add(390);
+        list.add(30);
+        list.add(50);	
+	System.out.println(list.size());//3
+        //将一个数组长度为3的数组转为长度为三的list列表
+        List dest = Arrays.asList(new Object[list.size()]);
+        System.out.println(dest);//[null, null, null]
+        Collections.copy(dest,list);
+        System.out.println(dest);//[390, 30, 50]复制成功
+```
+
+##### 方法三：同步控制：
+
+Collections 类中提供了多个synchronizedXxx() 方法，该方法可使将指定集合包装成线程同步的集合，从而可以解决多线程并发访问集合时的线程安全问题
+
+```java
+List list = new ArrayList();
+List list1 = Collections.synchronizedList();//返回的list1即为线程安全的list 
+```
+
+### 三十三、泛型：
+
+#### 在集合中使用泛型：List:
+
+==泛型使用前：==
+
+```java
+//        未使用泛型之前：
+        List list = new ArrayList();
+//        需求：存放学生成绩：
+        list.add(390);
+        list.add(30);
+        list.add(50);
+//        问题一：存储类型不安全：
+        list.add("Tom");
+        for(Object score:list){
+//        问题二：强转失败：
+            int stuScore = (Integer) score;
+```
+
+==使用泛型后：==
+
+```java
+//    泛型类型不能是基本数据类型：
+        ArrayList<Integer> list = new ArrayList<>();
+//        指定添加Integer类型
+        list.add(99);
+//        编译时，进行类型检查，保证数据的安全
+//        list.add("zyy");
+//        方式一：
+        for (Integer score:list) {
+//            避免了强转操作
+            int stuScore = score;
+            System.out.println(stuScore);
+        }
+//        方式二：
+        Iterator<Integer> iterator = list.iterator();
+```
+
+#### 在集合中使用泛型：HashMap
+
+```java
+    @Test
+    public void test2(){
+        Map<String,Integer> map = new HashMap<String,Integer>();
+        map.put("zyy",20);
+//        泛型嵌套：Entry属于Map类似于内部类
+        Set<Map.Entry<String, Integer>> entries = map.entrySet();
+        Iterator<Map.Entry<String, Integer>> iterator = entries.iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String,Integer> entry = iterator.next();
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            System.out.println(key+"....."+value);
+        }
+    }
+```
+
+**总结：**
+
+> * 集合接口或集合类在jdk时都修改为带泛型的结构
+> * 在实例化集合类时，可以指明具体的泛型类型
+> * 指明完以后，在集合类或接口中凡是定义类或接口时，内部结构（方法、构造器、属性等）使用到类的泛型的位置，都指定为实例化时的泛型类型。比如：add(E e)----------> add(Integer e)
+> * ==注意==：泛型的类型必须是类，不能是基本数据类型需要用到基本数据类型的位置拿包装类替换
+> * 如果实例化时，没有指明泛型类型，默认类型为java.lang.Object类型
 
