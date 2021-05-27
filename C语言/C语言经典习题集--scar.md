@@ -1182,3 +1182,280 @@ int main(){
     }
 }
 ```
+
+## 第二十二题：查找子字符串数量：
+
+```题目
+用函数编程实现计算字符串中子串出现的次数
+```
+
+```c
+#include <stdio.h>
+#include <string.h>
+
+int subString(char *str,char *sub)
+{
+    int count = 0, i, j;
+    for (i = 0; i < strlen(str); i++) {
+        for (j = 0; j < strlen(sub); j++) {
+            if(str[i + j] != sub[j]) {//选择不同的比较起始点与子字符串比较
+                break; // 出现了不同字符就退出循环
+            }
+        }
+        if (j == strlen(sub)) {
+            count++; // 退出循环后若j的值等于子串的长度，则存在子串
+        }
+    }
+    return count;
+}
+
+int main(void)
+{
+    char str[100],sub[50];
+    printf("请输入母串：");
+    gets(str);
+    printf("请输入子串：");
+    gets(sub);
+    printf("%d", subString(str,sub));
+    return 0;
+}
+```
+
+## 第二十三题：结构体初始化，字符串不考虑大小写的比较：
+
+```c
+#define _CRT_SECURE_NO_WARNINGS 1
+#include<stdio.h>
+#include<string.h>
+struct Candidate
+{
+	char name[10];
+	int count;
+};
+int main()
+{
+	struct Candidate arr[3] = {
+		"li",0,"zhang",0,"wang",0
+	};
+	int i = 0, j = 0;
+	char s[10];
+	int wrong = 0;
+	int flag = 0;
+	for (i = 0; i < 10; i++)
+	{
+		flag = 0;
+		printf("Input vote %d:", i + 1);
+		scanf("%s", s);
+		for (j = 0; j < 3; j++)
+		{
+			if (strcasecmp(arr[j].name, s) == 0)//不考虑大小写字符串的比较
+				{
+				    arr[j].count++;
+                    flag = 1;
+				}
+		}
+		if (flag == 0)
+		{
+			wrong++;
+		}
+	}
+	printf("Election results:\n");
+	for (i = 0; i < 3; i++)
+	{
+		printf("%8s:%d\n", arr[i].name, arr[i].count);
+	}
+		printf("Wrong election:%d\n", wrong);
+}
+```
+
+## 第二十四题：链表输入、寻找、插入
+
+```c
+
+在一个有序(按非递减顺序)的链表中插入一个元素为x的结点，使插入后的链表仍然有序（链表数据域为整型数，N为6）。
+**输入提示："输入数组6个元素的值。\n"
+**输入格式："%d"
+**输出提示："此链表各个结点的数据域为："
+**输出格式："%d "   (注：所有数据输出结束后有一个回车)
+**输入提示："输入要插入的数据x:"
+**输入格式："%d"
+**输出提示："插入后链表各个结点的数据域为："
+**输出格式："%d "  (注：所有数据输出结束后有一个回车)
+   
+
+程序运行示例如下：
+输入数组6个元素的值。↙
+12 23 34 45 56 67
+此链表各个结点的数据域为：12 23 34 45 56 67 ↙
+输入要插入的数据x:36
+插入后链表各个结点的数据域为：12 23 34 36 45 56 67↙
+```
+
+```c
+/*
+在一个有序(按非递减顺序)的链表中插入一个元素为x的结点，
+使插入后的链表仍然有序（链表数据域为整型数，初始时输入6个元素）。
+程序运行示例如下：
+输入数组6个元素的值。
+12 23 34 45 56 67
+此链表各个结点的数据域为：12 23 34 45 56 67 
+输入要插入的数据x:36
+插入后链表各个结点的数据域为：12 23 34 36 45 56 67 
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct num                                  //1.准备工作-结构体定义
+{                                           //结构体包含：
+	int a;                                  //①数据
+	struct num *pNext;                      //②指针
+};
+
+#define SIZE sizeof(struct num)             //2.宏定义SIZE, 方便后续分配内存
+
+struct num *CreatLiList(void)               //3.函数-返回结构体指针-建立链表
+{
+	struct num *spHead,*spPre,*spCur;       //头, 前, 现
+	int n, count = 0;                      
+	spPre  = (struct num *)malloc(SIZE);    //给Pre分配内存
+	spHead = spPre;                         //Head指向Pre
+	spHead -> pNext = NULL;                 //头结点中的②指针指向NULL
+    
+	do 
+	{
+		scanf("%d",&n);                     //输入数据
+		if (count != 6)                     //结束标志
+		{
+            count ++;
+			spCur = (struct num *)malloc(SIZE);  //给Cur分配内存
+
+			spCur -> a = n;                      //赋予Cur①数据
+
+			spCur -> pNext = NULL;               //Cur②指针指向NULL
+
+			spPre -> pNext = spCur;              //Cur移到下一个
+			spPre = spCur;                       //Pre移到Cur
+		}
+	} while (count != 6);                        //结束标志
+	return spHead;                               //返回头节点, 成功创建链表
+}
+
+
+int AddNode(struct num *sp, int x)                   //函数-插入节点-传入头结点、插入数据
+{
+	struct num *spCur,*spNew;
+	spCur = sp;
+    int flag = 1;
+	while((spCur -> pNext)->a < x)
+	{
+	    spCur = spCur -> pNext; 	
+	}                                                //退出循环时，x 要插入Cur 与 Cur->next 之间
+
+	spNew = (struct num *)malloc(SIZE);
+	if (spNew == NULL)  return 1;
+	
+	spNew -> a = x;                                  //赋值
+                                                     //e.g. 原来a→c，加入b后，a→b→c
+    spNew -> pNext = spCur -> pNext ;                //让b→的 指向 a→的
+    spCur -> pNext = spNew;  						//把a→的 改为 b
+    
+    return 1;
+}
+
+
+
+void TraverLiList(struct num *sp)                 //函数-遍历链表-传入头结点
+{
+	struct num *spCur;
+	spCur = sp -> pNext;
+	while (spCur != NULL)
+	{
+		printf("%d ", spCur->a);
+		spCur = spCur -> pNext;
+	}
+}
+
+int main()
+{
+	printf("输入数组6个元素的值。\n");
+    struct num* head = CreatLiList();
+    printf("此链表各个结点的数据域为：");
+    TraverLiList(head); 
+	printf("\n");
+    int x;
+    printf("输入要插入的数据x:");
+    scanf("%d", &x);
+    int i = AddNode(head, x);
+    printf("插入后链表各个结点的数据域为：");
+    TraverLiList(head); 
+    return 0;
+}
+```
+
+## 第二十五题：链表删除、创建
+
+```题目
+n个人围成一圈，顺序编号。从第一个人开始从1到m报数，凡报到m的人退出圈子，编程求解最后留下的人的初始编号。
+程序运行示例：
+6 3（两个输入数据之间有空格）
+1
+
+输入格式：scanf("%d%d",&n,&m);
+输出格式：printf("%d\n",loop[dest]);
+```
+
+```c
+struct Person{
+    int ID;
+    struct Person *next;
+};
+#include <malloc.h>
+#include <stdio.h>
+
+#define N sizeof(struct Person)
+struct Person* Build(int n){//创建n个人
+    struct Person *head,*Pt,*endPt;
+    Pt = (struct Person*) malloc(N);
+    Pt->ID = 1;
+    head = Pt;
+    endPt = Pt;
+    if(n==1){
+        head->next = head;
+        return head;
+    }
+    for (int i = 2; i <= n ; ++i) {
+        Pt = (struct Person*) malloc(N);
+        Pt->ID = i;
+        endPt->next = Pt;
+        endPt = Pt;
+    }
+    endPt->next = head;
+    return head;
+}
+struct Person *Delete(struct Person *h,int m){
+    struct Person *head,*p,*mp;//mp做删除的目的指针
+    int j;
+    head = h;
+    p = h;
+    while (p->next!=p){
+        for (int i = 2; i <= m - 1; ++i) {
+            p = p->next;
+        }
+//        对此时所指的p的下一个结构体进行删除操作：
+        mp = p->next;
+        p->next = mp->next;
+        free(mp);
+        p = p->next;
+    }
+    return p;
+}
+int main() {
+    int n,m;
+    struct Person *head,*p;
+    scanf("%d%d",&n,&m);
+    head = Build(n);
+    p = Delete(head,m);
+    printf("%d\n",p->ID);
+}
+```

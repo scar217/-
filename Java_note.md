@@ -2717,13 +2717,13 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >        public abstract void eat();
 >    }
 >    class Student extends Person{
->        public void eat(){
+>        public void eat(){//重写父类中的eat()方法
 >            System.out.println("学生吃饭");
 >        }
 >    }
 >    ```
 >
->    
+> 
 
 ##### abstract修饰方法：抽象方法：
 
@@ -2900,7 +2900,7 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >           System.out.println("3");
 >       }
 >   }
->                                                                   
+>                                                                                         
 >   ```
 >
 > * ==默认方法使用 default 关键字修饰==。可以**通过实现类对象来调用**
@@ -3010,19 +3010,19 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >       public void method(){
 >   //        局部内部类（方法内）：
 >           class AA{
->                                                                               
+>                                                                                                     
 >           }
 >       }
 >       {
 >   //        局部内部类（代码块内）
 >           class BB{
->                                                                               
+>                                                                                                     
 >           }
 >       }
 >   //    局部内部类（构造器内）：
 >       public person(){
 >           class CC{
->                                                                               
+>                                                                                                     
 >           }
 >       }
 >   }
@@ -3034,11 +3034,11 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >   class person{
 >   //静态成员内部类：
 >       static class Dog{
->                                                                           
+>                                                                                                 
 >   }
 >   //非静态成员内部类：
 >       class Bird{
->                                                                           
+>                                                                                                 
 >       }
 >   }
 >   ```
@@ -4137,7 +4137,7 @@ String(byte[] ，int offset ，int length);// ：用指定的字节数组的一�
 >    StringBuffer sb1 = new StringBuffer();//char[] value = new char[16];底层创建了一个长度为16的字符数组
 >    sb1.append('a');//value[0] = 'a';
 >    sb1.append('b');//value[1] = 'b';
->                                                                                                
+>                                                                                                                                 
 >    StringBuffer sb2 = new StringBuffer("abc");//char[] value =new char{"abc".length() + 16}; value.append("abc");
 >    /* 问题1：扩容问题：如果要添加的数据底层数组盛不下了，那就要扩容底层的数组
 >          默认情况下，扩容为原来容量的2倍+2，同时将原有的数组中的元素复制到新的数组中
@@ -4607,7 +4607,7 @@ Comparable接口的方式一旦一定，保证Comparable接口实现类的对象
 
 ##### 成员方法：
 
-* native long currentTimeMillis()： ：
+* ==native long currentTimeMillis()：== ：
   该方法的作用是返回当前的计算机时间，时间的表达格式为当前计算机时
   间和GMT时间(格林威治时间)1970年1月1号0时0分0秒所差的毫秒数。
 * void exit(int status)： ：
@@ -5577,7 +5577,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->       
+>                             
 >      Set set = map.keySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -5596,7 +5596,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->                
+>                                                                       
 >      Set set = map.entrySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -5613,7 +5613,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->                
+>                                                                       
 >      Set set = map.keySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -5782,4 +5782,774 @@ List list1 = Collections.synchronizedList();//返回的list1即为线程安全�
 > * 指明完以后，在集合类或接口中凡是定义类或接口时，内部结构（方法、构造器、属性等）使用到类的泛型的位置，都指定为实例化时的泛型类型。比如：add(E e)----------> add(Integer e)
 > * ==注意==：泛型的类型必须是类，不能是基本数据类型需要用到基本数据类型的位置拿包装类替换
 > * 如果实例化时，没有指明泛型类型，默认类型为java.lang.Object类型
+> * ==优点==：在 比较时 ==省略强转==后在比较的步骤
+
+#### 如何自定义泛型结构：
+
+##### 自定义泛型类：
+
+* 如果定义了泛型类，实例化没有指明类的泛型，则认为此泛型类型为Object类
+
+* **理解为类里面的某属性的数据类型需要后期来定夺，而T或者E等代表暂时作为数据类型的变量来使用**
+
+* 要求：如果定义的类带泛型，建议在实例化时要指明类的泛型
+
+* 创建泛型类：
+
+  * ```java
+    public class Order <T> {
+        String orderName;
+        int orderAge;
+        T orderT;
+    
+        public Order() {
+        }
+    
+        public Order(String orderName, int orderAge, T orderT) {
+            this.orderName = orderName;
+            this.orderAge = orderAge;
+            this.orderT = orderT;
+        }
+        public T getOrderT(){
+            return orderT;
+        }
+    
+        public void setOrderT(T orderT) {
+            this.orderT = orderT;
+        }
+    
+        @Override
+        public String toString() {
+            return "Order{" +
+                    "orderName='" + orderName + '\'' +
+                    ", orderAge=" + orderAge +
+                    ", orderT=" + orderT +
+                    '}';
+        }
+    }
+    ```
+
+* 实例化泛型类：
+
+  * ```java
+    public void test0(){
+        Order<String> o = new Order<String>();
+        o.setOrderT("周泳屹");
+        System.out.println(o.orderT);
+    }
+    ```
+
+* 两种方式定义继承带有泛型的父类：
+
+  1. ```java
+     public class subOrder extends Order<Integer>{
+         
+     }//subOrder不是泛型类
+     ```
+
+  2. ```java
+     public class subOrder<String> extends Order<Integer>{
+         
+     }//实例化时需要指明泛型类型
+     ```
+
+##### 解释说明：
+
+1. 泛型类可能有多个参数，此时应将多个参数一起放在尖括号内。比如：
+    <E1,E2,E3>
+
+2. 泛型类的构造器如下：public GenericClass(){}。
+    而下面是错误的：public GenericClass<E>(){}
+
+3. 实例化后，操作原来泛型位置的结构必须与指定的泛型类型一致。
+
+4. 泛型不同的引用不能相互赋值。
+
+   * ```java
+         public void test0(){
+             ArrayList<Integer> list = null;
+             ArrayList<String> list1 = null;
+     //        此时：以下操作是错误的：
+             list = list1;
+         }
+     ```
+
+   * 尽管在编译时ArrayList<String>和ArrayList<Integer>是两种类型，但是，在运行时只有
+     一个ArrayList被加载到JVM中。 
+
+5. 泛型如果不指定，将被擦除，泛型对应的类型均按照Object处理，但不等价
+    于Object。 经验：泛型要使用一路都用。要不用，一路都不要用。
+
+6. 如果泛型结构是一个接口或抽象类，则不可创建泛型类的对象。
+
+7. jdk1.7，泛型的简化操作：ArrayList<Fruit> flist = new ArrayList<>();
+
+8. 泛型的指定中不能使用基本数据类型，可以使用包装类替换。
+
+9. 在类/接口上声明的泛型，在本类或本接口中即代表某种类型，可以作为非静态
+    属性的类型、非静态方法的参数类型、非静态方法的返回值类型。**但在静态方法
+    中不能使用类的泛型。**（创建时间是非静态同步，慢与静态方法的创建）
+
+10. ==异常类不能是泛型==
+
+11. 创建泛型变量的数组：不能使用new E[]（T已经是一个具体的变量，不是类，不能new对象）。但是可以：E[] elements = (E[])new Object[capacity];（先new Object类型数组，再对其进行强转）
+参考：ArrayList源码中声明：Object[] elementData，而非泛型参数类型数组。
+
+12. 父类有泛型，子类可以选择保留泛型也可以选择指定泛型类型：
+
+    * 子类不保留父类的泛型：按需实现
+
+      * 没有类型 擦除
+      * 具体类型
+
+    * 子类保留父类的泛型：泛型子类
+
+      * 全部保留
+      * 部分保留
+
+    * ```java
+      class Father<T1, T2> {
+      }
+      // 子类不保留父类的泛型
+      // 1)没有类型 擦除
+      class Son1 extends Father {// 等价于class Son extends Father<Object,Object>{
+      }
+      // 2)具体类型
+      class Son2 extends Father<Integer, String> {
+      }
+      // 子类保留父类的泛型
+      // 1)全部保留
+      class Son3<T1, T2> extends Father<T1, T2> {
+      }
+      // 2)部分保留
+      class Son4<T2> extends Father<Integer, T2> {
+      }
+      ```
+
+    * ```java
+      class Father<T1, T2> {
+      }
+      // 子类不保留父类的泛型
+      // 1)没有类型 擦除
+      class Son<A, B> extends Father{//等价于class Son extends Father<Object,Object>{
+      }
+      // 2)具体类型
+      class Son2<A, B> extends Father<Integer, String> {
+      }
+      // 子类保留父类的泛型
+      // 1)全部保留
+      class Son3<T1, T2, A, B> extends Father<T1, T2> {
+      }
+      // 2)部分保留
+      class Son4<T2, A, B> extends Father<Integer, T2> {
+      }
+      ```
+
+    **结论：**子类必须是“富二代”，子类除了指定或保留父类的泛型，还可以增加自
+    己的泛型
+
+#### 泛型方法：
+
+**泛型方法**：在方法中出现了泛型的结构，泛型参数与类的泛型参数没有任何关系，即泛型方法所属的类是不是泛型类，都没有关系
+
+**非泛型方法：**
+
+```java
+public T getOrderT(){
+    return OrderT;
+}
+public void setOrderT(T orderT){
+    this.orderT = orderT;
+}
+```
+
+**泛型方法的格式**：
+
+```java
+      public <E> List <E> copy(E[] arr){}//对返回类型为List的集合添加泛型，指定集合中存在的类型
+//[访问权限] <泛型> 返回类型 方法名([ 泛型标识称 参数名称]) 抛出的异常
+```
+
+```java
+public <E> List<E> copy(E[] arr){//参数传入的E决定了返回值的泛型
+    ArrayList<E> list = new ArrayList<>();
+    for (E e:arr){
+        list.add(e);
+    }
+    return list;
+}
+```
+
+**泛型方法的调用：**
+
+```java
+    @Test
+    public void test0(){
+        Order<String> order = new Order<>();
+        Integer[] arr = new Integer[]{1,2,3,4};
+//        泛型方法在调用时，指明泛型参数的类型，与类的泛型无关
+        List<Integer> copy = order.copy(arr);
+        System.out.println(copy);
+    }
+```
+
+==泛型方法可以声明为静态，原因：泛型参数是在调用方法时确定的，并非在实例化类时确定==
+
+#### 泛型在继承方面的体现：
+
+* 类A是类B的父类，但是G<A>和G<B>不具有子父类关系
+
+  * ```java
+        @Test
+        public void test1(){
+    //        由于多态，则一般可以实现：
+            Object obj = null;
+            String str = null;
+            obj = str;
+            System.out.println(obj);
+    //        泛型：
+            List<Object> list = null;
+            List<String> list1 = null;
+    //        此时的list与list1的类型不具有子父类关系：
+    //        list = list1;
+        }//Object泛型接收String泛型，会使一种泛型集合存在多钟类型的元素
+    ```
+
+* 补充：类A是类B的一个父类，A<G>是B<G>的一个父类：
+
+  * ```java
+        @Test
+        public void test1(){
+            List<String> list = null;
+            ArrayList<String> list1 = null;
+    //        或者：
+            List<String> list2 = new ArrayList<>();
+        }
+    ```
+
+#### 通配符的使用：
+
+==通配符：?==
+
+* **作为共同的父类：**
+
+```java
+    @Test
+    public void test3(){
+        List<String> list1 = null;
+        List<String> list2 = null;
+        List<?> list = null;//通用父类
+
+        list = list1;
+        list = list2;
+//        作用：遍历一个集合的不同种泛型，可以只定义一个方法
+
+    }
+    public void print(List<?> list3){
+        Iterator<?> iterator = list3.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+```
+
+* **其他使用：**
+
+  ```java
+      @Test
+      public void test3(){
+          List<?> list = new ArrayList<>();//通用父类
+          List<String> list3 = new ArrayList<>();
+          list3.add("AA");
+          list3.add("BB");
+          list3.add("CC");
+          list = list3;
+  //  一、添加(写入)：对于List<?>就不能向其内部添加数据
+  //        另外：唯一可以添加null
+          list.add(null);
+  //        list.add();
+  //        System.out.println(list);
+  //  二、获取（读取）：允许读取数据，读取的数据时Object类型
+          Object o = list.get(0);
+      }
+  ```
+
+* ==注意==：
+
+  * ```java
+    //注意点1：编译错误：不能用在泛型方法声明上，返回值类型前面<>不能使用?
+    public static <?> void test(ArrayList<?> list){
+    }
+    ```
+
+  * ```java
+    //注意点2：编译错误：不能用在泛型类的声明上
+    class GenericTypeClass<?>{
+    }
+    ```
+
+  * ```java
+    //注意点3：编译错误：不能用在创建对象上，右边属于创建集合对象
+    ArrayList<?> list2 = new ArrayList<?>();
+    ```
+
+#### **有限制条件的通配符的使用**
+
+* 通配符指定上限
+  * 上限extends：使用时指定的类型必须是继承某个类，或者实现某个接口，即<=
+* 通配符指定下限
+  * 下限super：使用时指定的类型不能小于操作的类，即>=
+* 举例：
+  * ![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-20_23-04-28.png)
+
+* ? extends Person:
+* ? super Person:
+  * ![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-20_23-10-24.png)
+
+* 读取元素：
+  * List<? extends Person>:只能用Person类以上的父类来接收
+  * List<? super Person>:只能使用Object类来接收
+
+### 三十四、I/O流：
+
+#### File类的使用：
+
+##### File类的常用构造器：
+
+```java
+ public File(String pathname);//以pathname为路径创建File对象，可以是 绝对路径 或者 相对路径，如果pathname是相对路径，则默认的当前路径在系统属性user.dir中存储。
+```
+
+* 相对路径：相较于某个路径下，指明的路径
+* 绝对路径：包含盘符在内的文件或文件目录的路径
+
+```java
+public File(String parent,String child);//以parent为父路径，child为子路径创建File对象。
+```
+
+```java
+public File(File parent,String child);//根据一个父File对象和子文件路径创建File对象
+```
+
+**实例**：
+
+```java
+    @Test
+    public void test0(){
+//        构造器一：
+        File file1 = new File("he.txt");//相对于当前module
+        File file2 = new File("F:\\Java语言学习\\he.txt");
+//        构造器二：
+        File file3 = new File("F:\\Java语言学习\\","he.txt");
+//        构造器三：
+        File file4 = new File(file3,"he.txt");
+    }
+```
+
+![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-21_16-51-47.png)
+
+```java
+File file2 = new File("d:" + File.separator + "atguigu" + File.separator + "info.txt");
+```
+
+##### File类的常用方法一：
+
+**获取功能：**
+
+```java
+public String getAbsolutePath();获取绝对路径
+public String getPath();获取路径
+public String getName();获取名称
+public String getParent();获取上层文件目录路径。若无，返回null
+public long length();获取文件长度（即：字节数）。不能获取目录的长度。
+public long lastModified();获取最后一次的修改时间，毫秒值
+        System.out.println(new Date(file1.lastModified()));//根据毫秒数计算时间
+public String[] list();获取指定目录下的所有文件或者文件目录的名称数组
+public File[] listFiles();获取指定目录下的所有文件或者文件目录的File数组
+```
+
+**重命名功能：**
+
+```java
+public boolean renameTo(File dest);//把文件重命名为指定的文件路径
+//例子：
+        File file1 = new File("he.txt");//相对于当前module
+        File file2 = new File("F:\\Java语言学习\\he.txt");
+        boolean i = file1.renameTo(file2);
+        System.out.println(i);//true
+```
+
+==要保证返回true，即重命名成功，需要file1在硬盘中存在，file2在硬盘中不存在==
+
+**File类的判断功能：**
+
+```java
+public boolean isDirectory();//判断是否是文件目录
+public boolean isFile();//判断是否是文件
+public boolean exists();//判断是否存在
+public boolean canRead();//判断是否可读
+public boolean canWrite();//判断是否可写
+public boolean isHidden();//判断是否隐藏
+```
+
+##### File类的常用方法二：
+
+**File类的创建功能：**
+
+```java
+public boolean createNewFile();//创建文件。若文件存在，则不创建，返回false
+public boolean mkdir();//创建文件目录。如果此文件目录存在，就不创建了。如果此文件目录的上层目录不存在，也不创建。
+public boolean mkdirs();//创建文件目录。如果上层文件目录不存在，一并创建
+```
+
+==注意事项：==如果你创建文件或者 文件 目录没有 写 盘符路径 ， 那么 ， 默认在项目
+路径下 。
+
+**File类的删除功能：**
+
+```java
+public boolean delete();//删除文件或者文件夹
+```
+
+==注意：==Java中的删除不走 回收站。**要删除一个文件目录，请注意该文件目录内不能包含文件或者文件目录**
+
+**测试：**文档创建
+
+```java
+    @Test
+    public void test1() throws IOException {
+        File file = new File("F:\\FileTest\\helloFile.txt");
+        if (!file.exists()) {
+           file.createNewFile();
+            System.out.println("创建成功");
+        }else {
+            file.delete();
+            System.out.println("删除成功");
+        }
+    }
+```
+
+**测试**：文件创建
+
+```java
+File file1 = new File("F:\\China No1");
+file1.mkdir();
+```
+
+#### I/O流：
+
+##### IO流的引入：
+
+File类中未涉及到写入或者读取文件内容的操作，如果需要读取或者写入文件内容，必须使用IO流来完成：
+
+后续File类的对象常会作为参数传递到流的构造器中，指明读取或写入的“终点”
+
+##### 流的分类：
+
+* 按操作数据单位不同分为：流 字节流(8bit) ，字符流(16 bit)
+* 按数据流的 流向不同分为：输入流，输出流
+* 按流的 角色的不同分为：节点流，处理流 
+
+![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-21_21-45-24.png)
+
+| （抽象基类） | 字节流（图像等） | 字符流（文档等） |
+| :----------: | :--------------: | :--------------: |
+|    输入流    |   InputStream    |      Reader      |
+|    输出流    |   OutputStream   |      Writer      |
+
+
+
+##### 流的体系结构：
+
+|   抽象基类   | 节点流（或文件流） | 缓冲流（处理流的一种） |
+| :----------: | :----------------: | :--------------------: |
+| InputStream  |  FileInputStream   |  BufferedInputStream   |
+| OutputStream |  FileOutputStream  |  BufferedOutputStream  |
+|    Reader    |     FileReader     |     BufferedReader     |
+|    Writer    |     FileWriter     |     BufferedWriter     |
+
+1. 对于文本文件（.txt、.java、.c 、.cpp），使用字符流处理
+2. 对于非文本文件（.jpg、.mp3、.mp4、.avi、.doc、.ppt）使用字节流处理
+
+##### 字符的读出：
+
+**FileReader基本操作**：
+
+```java
+    //    异常的处理：为了保证流资源一定可以执行关闭操作，需要使用try-catch-finally处理
+    @Test
+    public void test0() throws IOException {
+//        将文件hello.txt（硬盘中的文件）文件内容读入到程序中，并输出到控制台
+//        1.实例化File类的对象，指明要操作的文件
+        File file = new File("hello.txt");
+//        2.提供具体的流（字符流，并输入）
+        FileReader fr = new FileReader(file);//参数传入需要操作的文件名的对象
+//        3.数据的读入：
+//          read();空参，返回读入的一个字符，如果达到文件的末尾，返回-1
+        int data = fr.read();
+        while (data != -1) {
+            System.out.print((char) data);
+//            继续读取下一个：
+            data = fr.read();
+        }
+//        4.流的关闭：close();
+        fr.close();
+    }
+```
+
+**改进**：
+
+```java
+    //    对read();方法的升级使用：使用read重载方法
+    @Test
+    public void test1() throws IOException {
+        File file = new File("hello.txt");
+//        FileReader的实例化：
+        FileReader fr = new FileReader(file);
+//        读入操作：使用另一个构造器：fr.read(cb[]);返回读入的个数，读完后返回-1
+        char[] cBuffer = new char[5];//读取char类型文档，用char类型数组存放
+        int len;//每次读入字符的个数
+        while ((len = fr.read(cBuffer)) != -1) {
+//            方式一：正确写法：
+//            for (int i=0;i<len;i++){
+//                System.out.print(cBuffer[i]);
+//            }
+//            错误写法：
+//            for (int i = 0; i < cBuffer.length; i++) {
+////                读写到最后几个字符时，长度可能不为5，则输出有误
+//                System.out.print(cBuffer[i]);
+//            }
+//        }
+//        方式二：正确写法：
+//            第一参数传入字符数组转化成字符串，第二个参数：输出字符串的首位置，第三个参数：输出字符串末尾（不包括）
+            String str = new String(cBuffer, 0, len);
+            System.out.print(str);
+//        错误写法：
+//        String str = new String(cBuffer);
+//        System.out.print(str);
+        }
+            fr.close();
+    }
+```
+
+##### 从内存中的数据写出到硬盘文件中：
+
+==异常处理IDEA快捷键：Ctrl+Alt+T==
+
+**FileWriter的基本操作**：
+
+```java
+ @Test
+    public void test2() throws IOException {
+        FileWriter fw = null;//异常处理时try抛出的，先写的try中的代码
+        try {
+//        1.提供File类的对象
+            File file = new File("hi.txt");
+//        2.提供FileWriter的对象，用于数据写出：
+            fw = new FileWriter(file,false);
+//        3.写出操作：
+            fw.write("I am a student\n");//换行使用转义字符
+            fw.write("China No.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //        4.资源关闭的操作：
+            fw.close();
+        }
+    }
+```
+
+**将一个文件写入另一个文件中（复制）**
+
+```java
+@Test
+public void test3() throws IOException {
+    FileReader fr = null;
+    FileWriter fw = null;
+    try {
+        char[] str = new char[5];
+        int len;
+        File file = new File("hello.txt");
+        File file1 = new File("hi.txt");
+        fr = new FileReader(file);
+        fw = new FileWriter(file1,true);
+        while ((len = fr.read(str))!=-1){
+       //读入字符从0到len
+            fw.write(str,0,len);
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        fw.close();
+        fr.close();
+    }
+}
+```
+
+##### 字节流的基本使用：
+
+```java
+@Test
+    public void test4() throws IOException {
+        FileOutputStream fo = null;
+        FileInputStream fi = null;
+        try {
+            int len;
+            byte[] arr = new byte[10];
+            File file1 = new File("zyy1.jpg");//写入
+            File file = new File("IMG_20210403_194005.jpg");//读出
+            fo = new FileOutputStream(file1);
+            fi = new FileInputStream(file);
+
+            while ((len = fi.read(arr))!=-1){
+                fo.write(arr,0,len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            fo.close();
+            fi.close();
+        }
+    }
+```
+
+##### 处理流之一：缓冲流（处理流的一种）：
+
+==作用：==提高文件的读写效率
+
+==处理流：==就是“套接”在已有流的基础之上
+
+```java
+/* 1.缓冲流：
+BufferedInputStream 和 BufferedOutputStream
+BufferedReader 和 BufferedWriter*/
+```
+
+```java
+/*实现非文本文件的复制*/
+    @Test
+    public void BufferedTest(){
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+//        1.造文件
+            File srcFile = new File("IMG_20210403_194005.jpg");
+            File dest = new File("zyy.jpg");
+//        2.造流
+//          2.1 造节点流
+            FileInputStream fis = new FileInputStream(srcFile);
+            FileOutputStream fos = new FileOutputStream(dest);
+//        2.2造缓冲流：(将节点流传入缓冲流)
+            bis = new BufferedInputStream(fis);
+            bos = new BufferedOutputStream(fos);
+//        3.复制的细节，读取和写入：
+            byte[] buffer = new byte[10];
+            int len;
+            while ((len = bis.read(buffer))!=-1){
+                bos.write(buffer,0,len);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //        4.资源关闭：
+//          要求：先关闭外层的流，再关内层的流
+//      说明：在关闭外层流的同时，内层流也会自动进行关闭，于是关于内层流的关闭可以省略
+            if(bos!=null){
+                try {
+                    bos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (bis!=null){
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+```
+
+```java
+/*使用BufferedReader、BufferedWriter实现文本文件的复制*/
+    @Test
+    public void BufferedReader(){
+        BufferedReader br = null;
+        BufferedWriter bw = null;
+        try {
+            br = new BufferedReader(new FileReader(new File("hello.txt")));
+            bw = new BufferedWriter(new FileWriter(new File("hiZyy.txt")));
+//            读写操作：
+//              方式一：使用char[]数组
+            char[] arr = new char[10];
+            int len;
+            while ((len = br.read(arr))!=-1){
+                bw.write(arr,0,len);
+                bw.flush();
+            }
+//              方式二：使用String：
+//            String data;
+//            while ((data=br.readLine())!=null){
+//                    自定义添加换行符方法一：
+//                bw.write(data);//返回每一行中不包括换行符
+//                bw.newLine();
+//                    自定义添加换行符方法二：
+//                bw.write(data+"\n");
+//            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(br!=null){
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(bw!=null){
+                try {
+                    bw.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+```
+
+```java
+.flush();//刷新缓冲区
+```
+
+##### 处理流之二：转换流：
+
+![](F:\Java语言学习\笔记保存的截图\Snipaste_2021-05-23_17-20-55.png)
+
+```java
+@Test
+    public void testMyInput() throws Exception {
+        FileInputStream fis = new FileInputStream("dbcp.txt");
+        FileOutputStream fos = new FileOutputStream("dbcp5.txt");
+//        参数二指明了字符集，具体使用哪个字符集，取决于文件保存时使用的字符集
+        InputStreamReader isr = new InputStreamReader(fis, "GBK");
+        OutputStreamWriter osw = new OutputStreamWriter(fos, "GBK");
+        BufferedReader br = new BufferedReader(isr);
+        BufferedWriter bw = new BufferedWriter(osw);
+        String str = null;
+        while ((str = br.readLine()) != null) {
+            bw.write(str);
+            bw.newLine();
+            bw.flush();
+        }
+        bw.close();
+        br.close();
+    }
+```
+
+##### 输入输出流：
+
+##### 对象流：
 
