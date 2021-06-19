@@ -2900,7 +2900,7 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >           System.out.println("3");
 >       }
 >   }
->                                                                                                 
+>                                                                                                             
 >   ```
 >
 > * ==默认方法使用 default 关键字修饰==。可以**通过实现类对象来调用**
@@ -3010,19 +3010,19 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >       public void method(){
 >   //        局部内部类（方法内）：
 >           class AA{
->                                                                                                             
+>                                                                                                                         
 >           }
 >       }
 >       {
 >   //        局部内部类（代码块内）
 >           class BB{
->                                                                                                             
+>                                                                                                                         
 >           }
 >       }
 >   //    局部内部类（构造器内）：
 >       public person(){
 >           class CC{
->                                                                                                             
+>                                                                                                                         
 >           }
 >       }
 >   }
@@ -3034,11 +3034,11 @@ Integer 内部定义了IntegerCache结构，IntegerCache中定义了Integer[],�
 >   class person{
 >   //静态成员内部类：
 >       static class Dog{
->                                                                                                         
+>                                                                                                                     
 >   }
 >   //非静态成员内部类：
 >       class Bird{
->                                                                                                         
+>                                                                                                                     
 >       }
 >   }
 >   ```
@@ -4137,7 +4137,7 @@ String(byte[] ，int offset ，int length);// ：用指定的字节数组的一�
 >    StringBuffer sb1 = new StringBuffer();//char[] value = new char[16];底层创建了一个长度为16的字符数组
 >    sb1.append('a');//value[0] = 'a';
 >    sb1.append('b');//value[1] = 'b';
->                                                                                                                                             
+>                                                                                                                                                               
 >    StringBuffer sb2 = new StringBuffer("abc");//char[] value =new char{"abc".length() + 16}; value.append("abc");
 >    /* 问题1：扩容问题：如果要添加的数据底层数组盛不下了，那就要扩容底层的数组
 >          默认情况下，扩容为原来容量的2倍+2，同时将原有的数组中的元素复制到新的数组中
@@ -5577,7 +5577,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->                                     
+>                                                 
 >      Set set = map.keySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -5596,7 +5596,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->                                                                                           
+>                                                                                                                         
 >      Set set = map.entrySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -5613,7 +5613,7 @@ HashSet set = new HashSet();
 >      map.put(123,89);
 >      map.put(23,90);
 >      map.put(90,789);
->                                                                                           
+>                                                                                                                         
 >      Set set = map.keySet();
 >      Iterator iterator = set.iterator();
 >      while (iterator.hasNext()){
@@ -6566,4 +6566,358 @@ BufferedReader 和 BufferedWriter*/
 * 在运行时调用任意一个对象的成员变量和方法
 * 在运行时处理注解
 * 生成动态代理
+
+> * 普通类可以理解为Class类的实例化(对象)，即类也是一个对象:
+>
+>   * ```java
+>     Class = 
+>     ```
+>
+>     * 类的加载过程：程序经过`javac.exe`命令后，会生成一个或者多个字节码文件(.class结尾)。然后使用`java.exe`命令对某个字节码文件进行解释运行，相当于某个字节码文件加载到内存中，此过程就称为**类的加载**，加载到内存中的类，称为**运行时类，此时运行时类就作为Class的一个实例。**==换句话说，Class的实例化就对应着一个运行时类==	
+>     * 加载到内存中的运行时类，会缓存一定的时间，在此时间之内，可以通过不同的方式来获取此运行时类
+
+#### 获取Class的实例：
+
+```java
+//    获取Class的实例的方式：(各个方式获取的Class实例地址相同)
+    @Test
+    public void test1() throws ClassNotFoundException {
+//        方式一：调用运行时类的属性：.class
+        Class<Person> class1 = Person.class;
+        System.out.println(class1);
+//      方式二：通过运行时类的对象,调用getClass()方法
+        Person p1 = new Person();
+        Class class2 = p1.getClass();
+//        方式三：调用Class的静态方法：forName(String classPath)
+        Class class3 = Class.forName("JavaReflection.Person");
+        System.out.println(class1==class3);//true
+//        方式四：使用类的加载器：ClassLoader
+    }
+```
+
+#### 哪些类型可以有Class对象：
+
+1. class：外部类，成员(成员内部类，静态内部类)，局部内部类，匿名内部类
+
+2. interface：接口
+3. []：数组
+4. enum：枚举
+5. annotation：注解@interface
+6. primitive type：基本数据类型
+7. void
+
+==数组类型的Class对象，只要数组类型和维度相同，则Class对象的地址相等==
+
+```java
+Class c1 = Object.class;
+Class c2 = Comparable.class;
+Class c3 = String[].class;
+Class c4 = int[][].class;
+Class c5 = ElementType.class;
+Class c6 = Override.class;
+Class c7 = int.class;
+Class c8 = void.class;
+Class c9 = Class.class;
+int[] a = new int[10];
+int[] b = new int[100];
+Class c10 = a.getClass();
+Class c11 = b.getClass();
+```
+
+#### 通过反射创建运行时类的对象：
+
+##### newInstance方法的调用：
+
+```java
+@Test
+public void test3() throws InstantiationException, IllegalAccessException {
+    Class<Person> class1 = Person.class;    
+    /*
+    * newInstance():调用此方法，调用对应的运行时类的对象，内部是调用了运行时类的空参构造器
+    *               若运行时类没有空参构造器或者空参构造器访问权限允许(需要满足两者)，则报异常
+    *	通过对象获取对象的类的属性：
+    */
+    Person obj = class1.newInstance();//创建的是Person类对象
+    System.out.println(obj);//获取Person类的属性：Person{name='null', age=0}
+}
+```
+
+##### 体会反射的动态性：
+
+```java
+@Test
+public void test4(){
+    for (int i = 0; i < 20; i++) {
+        int num = new Random().nextInt(3);//随机值为0,1,2
+        String classPath;
+        switch (num){
+            case 0:
+                classPath = "java.util.Date";
+                break;
+            case 1:
+                classPath = "java.lang.Object";
+                break;
+            case 2:
+                classPath = "JavaReflection.Person";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + num);
+        }
+        try {
+            Object obj = getInstance(classPath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+/*
+    创建一个指定类的对象
+    classPath:指定类的全类名
+*/
+public Object getInstance(String classPath) throws Exception {
+    Class class1 = Class.forName(classPath);//Class的实例化
+    return class1.newInstance();//返回(运行时)类的对象
+}
+```
+
+#### 获取当前运行时类的属性结构：
+
+```java
+import JavaReflection.Person;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
+/**
+ * @author scar217
+ * @date 2021/6/19 11:57
+ */
+public class FileTest {
+    public static void main(String[] args) {
+        //    获取属性结构
+        Class clazz = Person.class;
+//        getFields():获取当前运行时类及其父类中声明为public访问权限的属性
+        Field[] fields = clazz.getFields();
+        for (Field f: fields){
+            System.out.println(f);
+        }
+//        getDeclaredFields():获取当前运行时类中所有的属性（不包含父类中声明的属性）
+        //获取权限修饰符   数据类型    变量名
+        Class claz1 = Person.class;
+        Field[] declaredFields = claz1.getDeclaredFields();
+        for (Field f: declaredFields
+             ) {
+//            1.权限修饰符
+            int modifiers = f.getModifiers();//返回的是数组
+            System.out.println(Modifier.toString(modifiers));//用Modifier调用toString函数将modifiers转换成字符串
+//            2.数据类型
+            System.out.println(f.getType());//类名的方式显示
+            System.out.println(f.getType().getName());//全类名的方式显示
+//            3.变量名
+            String name = f.getName();
+            System.out.println(name);
+        }
+    }
+}
+```
+
+#### 获取运行时类的方法结构：
+
+```javascript
+    @Test
+    public void test0(){
+        Class clazz = Person.class;
+//        getMethods():获取当前运行时类及其所有父类当中声明为public的方法
+        Method[] methods = clazz.getMethods();
+        for(Method m:methods){
+            System.out.println(m);
+        }
+//        getDeclaredMethods():获取当前运行时类中包含的方法，不包括父类
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+    }
+
+
+/**
+     * 方法的结构：
+     * @注解
+     * 权限修饰符    返回值类型   方法名(参数类型1 形参名1,.....) throws XxxException{}
+     * */
+    @Test
+    public void test1(){
+        Class clazz = Person.class;
+        Method[] methods = clazz.getMethods();
+        //获取每一个方法
+        for(Method m:methods){
+//            1.获取方法声明的注解
+            Annotation[] annotations = m.getAnnotations();
+            for (Annotation a:annotations) {
+                System.out.println(a);
+            }
+//            2.权限修饰符(与获取属性类似)
+            int modifiers = m.getModifiers();
+            System.out.print(Modifier.toString(modifiers)+"\t");
+//            3.返回值类型
+            System.out.print(m.getReturnType().getName()+"\t");
+//            4.方法名
+            System.out.print(m.getName()+"(");
+//            5.形参列表：
+            Class[] parameterTypes = m.getParameterTypes();
+            for (Class p:parameterTypes) {
+                System.out.println(p.getName());
+            }
+//            6.抛出的异常：
+            Class[] exceptionTypes = m.getExceptionTypes();
+            
+        }
+    }
+```
+
+#### 获取构造器结构
+
+```java
+ @Test
+    public void test0(){
+        Class clazz = Person.class;
+//        getConstructors():获取当前运行时类中声明 为public的 构造器
+        Constructor[] constructors = clazz.getConstructors();
+        for (Constructor c:constructors) {
+            System.out.println(c);
+        }
+//        getDeclaredConstructors():获取当前运行时类中声明的 所有的 构造器
+        Constructor[] declaredConstructors = clazz.getDeclaredConstructors();
+        for (Constructor d:declaredConstructors) {
+            System.out.println(d);
+        }
+    }
+```
+
+#### 获取运行时类的父类：
+
+```java
+@Test
+public void test1(){
+    Class clazz = Person.class;
+    //获取运行时类父类:
+    Class superclass = clazz.getSuperclass();
+    
+    System.out.println(superclass);
+}
+//        获取带泛型的父类
+        Type genericSuperclass = clazz.getGenericSuperclass();
+//        获取泛型类型：
+        ParameterizedType paramType = (ParameterizedType) genericSuperclass;//对获取的父类的泛型进行强转
+        Type[] actualTypeArguments = paramType.getActualTypeArguments();//获取泛型列表
+```
+
+#### 获取运行时类实现的接口：
+
+```java
+//    获取运行时类实现的接口
+    @Test
+    public void test2(){
+        Class clazz = Person.class;
+//        获取运行时类自身实现的接口
+        Class[] interfaces = clazz.getInterfaces();
+//        获取运行时类父类实现的接口
+        Class[] interfaces1 = clazz.getSuperclass().getInterfaces();
+    }
+```
+
+#### 获取运行时类所在的包：
+
+```java
+@Test
+public void test3(){
+    Class clazz = Person.class;
+    Package aPackage = clazz.getPackage();
+}
+```
+
+#### 获取运行时类的注解：
+
+```java
+@Test
+public void test3(){
+    Class clazz = Person.class;
+    //    获取运行时类所在的包
+    Package aPackage = clazz.getPackage();
+    //    获取运行时类的注解
+    Annotation[] annotations = clazz.getAnnotations();
+}
+```
+
+#### 调用运行时类指定的结构：
+
+**只适用于public权限的属性：**
+
+```java
+//    只适用于public权限的方法
+//    指定的属性：
+    @Test
+    public void test4() throws Exception {
+        Class clazz = Person.class;
+//        创建运行时类的对象，用于后续属性的操作
+        Person p = (Person) clazz.newInstance();
+//        获取指定属性(Person类里面的id属性)：要求运行时类的属性声明为public
+//        public使用率小，通常不使用此方法获取指定属性
+        Field id = clazz.getField("id");
+//        设置当前属性的值
+//        set():参数1：指明设置哪个属性，参数2：将此属性值设置为多少
+        id.set(p,21);
+//        获取当前属性的值：
+//        get():参数1：获取哪个对象的当前属性，参数2：
+    }
+```
+
+==通用获取法：==
+
+```java
+//    通用获取的办法：
+    @Test
+    public void test5() throws Exception{
+        Class clazz = Person.class;
+//        创建运行时类的对象，用于后续属性的操作
+        Person p = (Person) clazz.newInstance();
+//        1.getDeclaredField(String fieldName);获取运行时类中指定的变量名的属性
+        Field declaredField = clazz.getDeclaredField("name");
+//        2.保证当前属性是可以访问的
+        declaredField.setAccessible(true);
+//        3.设置、获取指定属性的值
+        declaredField.set(p,"zyy");
+        Object o = declaredField.get(p);
+        System.out.println(o);//zyy
+    }
+```
+
+#### 获取指定的运行时类的方法：
+
+```java
+ @Test
+    public void test6() throws Exception{
+        Class clazz = Person.class;
+//        创建运行时类的对象，用于后续属性的操作
+        Person p = (Person) clazz.newInstance();
+        /*
+        * 获取指定的某个方法：
+        * */
+//      1.获取指定的某个方法：getDeclaredMethod():参数1：指明获取的方法的名称 参数2：指明获取的方法的形参列表（的对象）(由于方法重载)
+        Method show = clazz.getDeclaredMethod("show", int.class);
+//        2.保证当前方法可访问
+        show.setAccessible(true);
+//        3.invoke():参数1：方法的调用着 参数2：给方法形参赋值的实参
+//        invoke();的返回值即为对应类中调用的方法的返回值,如果方法没有返回值，则返回null
+        Object invoke = show.invoke(p, 23);
+        System.out.println(invoke);
+        
+        
+        
+        
+//        如何调用静态方法：
+        Method s = clazz.getDeclaredMethod("showDesc");
+        s.setAccessible(true);
+//        静态方法调用invoke();参数可随便填一个对象
+        System.out.println(s.invoke(Person.class));
+//        s.invoke(null);
+    }
+```
 
